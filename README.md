@@ -1,4 +1,4 @@
-# 🧱 HR Dashboard – Architectural Overview
+# 🧱 Employee Management System – Architectural Overview
 
 This project is structured with a clean separation of concerns and just enough abstraction for maintainability and extensibility—without overengineering.
 
