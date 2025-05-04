@@ -1,53 +1,49 @@
-🧱 Architectural Decisions
-This project follows clean separation of concerns, with just enough abstraction for maintainability and extensibility — but without overengineering.
+# 🧱 HR Dashboard – Architectural Overview
 
-✅ Employee Handling
-EmployeeDatabase serves as a simple data access object (DAO).
+This project is structured with a clean separation of concerns and just enough abstraction for maintainability and extensibility—without overengineering.
 
-A separate service layer is not introduced for employees because:
+---
 
-The logic is limited to basic CRUD (create, read, update).
+## ✅ Employee Handling
 
-There are no domain-specific business rules (e.g., validations, cross-entity dependencies).
+The `EmployeeDatabase` class serves as a **Data Access Object (DAO)** for managing employee records.
 
-Adding another layer would create unnecessary complexity.
+A separate service layer was **not introduced** for employee logic because:
 
-This design keeps the system clean, focused, and testable while still being extensible if business logic grows in the future.
+- The logic is limited to basic CRUD operations.
+- There are no domain-specific business rules (e.g., validations, cross-entity dependencies).
+- Adding another layer would introduce unnecessary complexity.
 
-✅ Time Off Handling
-A full TimeOffService + TimeOffDao pattern is used.
+> This decision keeps the system clean, focused, and testable while remaining extensible should business logic grow in the future.
 
-Reasoning:
+---
 
-This part of the domain has explicit business rules, such as:
+## ✅ Time Off Handling
 
-Overlapping requests are only allowed if one is "Work Remotely"
+This part of the domain uses a layered design with:
 
-More complex rules could be added in the future (e.g., holiday calendars, maximum days off, approval workflows).
+- `TimeOffDao` – handles all raw SQL/database interactions.
+- `TimeOffService` – encapsulates all business rules and validation logic.
 
-Separating concerns makes the logic testable, reusable, and independent of database access details.
+### 📌 Why this structure?
 
-TimeOffDao handles all SQL/database logic, while TimeOffService focuses purely on business decisions.
+Time off management includes domain logic like:
+
+- Preventing overlapping requests unless one is **"Work Remotely"**.
+- Potential for rules such as:
+  - Holiday calendars
+  - Approval workflows
+  - Maximum time-off limits
+
+> By separating concerns, this part of the system is highly testable, reusable, and future-proof.
+
+---
 
 ## 🧪 Running Tests
 
-To run all tests in this project, use one of the following methods from the project root directory:
+You can run the full test suite using the following methods from the root of the project:
 
-**With `pytest` (recommended):**
+### ▶️ With `pytest` (Recommended)
+
 ```bash
 PYTHONPATH=. pytest
-```
-- This will discover and run all tests in the `tests/` directory.
-- Make sure you have `pytest` installed:
-  ```bash
-  pip install pytest
-  ```
-
-**With `unittest` (built-in):**
-```bash
-python -m unittest discover
-```
-- This will also discover and run all tests, but `pytest` is recommended for better output and flexibility.
-
-**Note:**  
-If you add new modules or packages, ensure each directory contains an empty `__init__.py` file so Python recognizes them as packages.
